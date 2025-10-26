@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlin.math.roundToInt
+import dev.gearturner.deepwatch.saveData.saveSliderValue
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
@@ -80,7 +81,10 @@ fun SliderScreen(navController: NavHostController) {
 
         }
         Button(
-            onClick = {},
+            onClick = {
+                saveSliderValue(navController.context, sliderValue.roundToInt())
+                navController.popBackStack()
+            },
             modifier = Modifier
                 .align(Alignment.Center)
                 .offset(y = 200.dp),
