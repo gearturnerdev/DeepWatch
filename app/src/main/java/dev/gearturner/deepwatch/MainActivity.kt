@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import dev.gearturner.deepwatch.navigation.AppNavigation
+import dev.gearturner.deepwatch.screens.UsagePermissionScreen
+import dev.gearturner.deepwatch.screens.usage.hasUsagePermission
 import dev.gearturner.deepwatch.ui.theme.DeepWatchTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +15,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            App()
+            if(hasUsagePermission(this)){
+                App()
+            }
+            else{
+                UsagePermissionScreen()
+            }
         }
     }
 }

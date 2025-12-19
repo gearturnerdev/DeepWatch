@@ -6,13 +6,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dev.gearturner.deepwatch.screens.MainScreen
 import dev.gearturner.deepwatch.screens.SliderScreen
+import dev.gearturner.deepwatch.screens.UsageListScreen
+import dev.gearturner.deepwatch.screens.UsagePermissionScreen
+import dev.gearturner.deepwatch.screens.usage.hasUsagePermission
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+
     NavHost(navController = navController, startDestination = "main") {
         composable("main") {MainScreen(navController)}
         composable("slider") { SliderScreen(navController)}
-
     }
 }
