@@ -20,6 +20,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import dev.gearturner.deepwatch.screens.usage.hasUsagePermission
 
 @Composable
 //@Preview(showBackground = true, showSystemUi = true)
@@ -43,7 +44,11 @@ fun MainScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = {
-                navController.navigate("slider")
+                if (hasUsagePermission(navController.context)) {
+                    navController.navigate("slider")
+                } else {
+                    navController.navigate("usage_permission")
+                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF1976D2)

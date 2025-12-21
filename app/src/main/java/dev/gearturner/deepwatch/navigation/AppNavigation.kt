@@ -16,6 +16,8 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = "main") {
         composable("main") {MainScreen(navController)}
-        composable("slider") { SliderScreen(navController)}
+        composable("slider") {SliderScreen(navController)}
+        composable("usage") {UsageListScreen()}
+        composable("usage_permission") {UsagePermissionScreen()}
     }
 }

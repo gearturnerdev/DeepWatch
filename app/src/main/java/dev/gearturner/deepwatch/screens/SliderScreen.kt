@@ -243,6 +243,14 @@ fun SliderScreen(navController: NavHostController) {
             ) {
                 Text("Submit")
             }
+
+            Button(
+                onClick = {
+                    navController.navigate("usage")
+                }
+            ) {
+                Text("Show Data")
+            }
         }
     }
 

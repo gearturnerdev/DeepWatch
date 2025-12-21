@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import dev.gearturner.deepwatch.saveData.saveUsageData
+
 
 class UsageViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -14,7 +16,11 @@ class UsageViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadUsage() {
         viewModelScope.launch {
-            _usageList.value = getUsageStats(getApplication())
+            val data = getUsageStats(getApplication())
+            _usageList.value = data
+
+            // ✅ Save usage JSON
+            saveUsageData(getApplication(), data)
         }
     }
 }
