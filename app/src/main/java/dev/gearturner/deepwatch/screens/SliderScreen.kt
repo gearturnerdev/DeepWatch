@@ -246,7 +246,7 @@ fun SliderScreen(navController: NavHostController) {
 
             Button(
                 onClick = {
-                    navController.navigate("usage")
+                    navController.navigate("usage_categories")
                 }
             ) {
                 Text("Show Data")

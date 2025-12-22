@@ -4,12 +4,15 @@ import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.PackageManager
+import dev.gearturner.deepwatch.Classifiers.AppCategory
+import dev.gearturner.deepwatch.Classifiers.classifyApp
 import java.util.Calendar
 
 data class AppUsage(
     val appName: String,
     val packageName: String,
-    val usageMinutes: Long
+    val usageMinutes: Long,
+    val category: AppCategory,
 )
 
 fun isSystemNoise(packageName: String): Boolean {
@@ -75,7 +78,8 @@ fun getUsageStats(context: Context): List<AppUsage> {
             usageMap[usage.packageName] = AppUsage(
                 appName = appName,
                 packageName = usage.packageName,
-                usageMinutes = minutes
+                usageMinutes = minutes,
+                category = classifyApp(appName, usage.packageName)
             )
         } else {
             usageMap[usage.packageName] = existing.copy(
