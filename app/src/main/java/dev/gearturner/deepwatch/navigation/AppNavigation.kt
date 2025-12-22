@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dev.gearturner.deepwatch.screens.MainScreen
 import dev.gearturner.deepwatch.screens.SliderScreen
+import dev.gearturner.deepwatch.screens.UsageCategoryScreen
 import dev.gearturner.deepwatch.screens.UsageListScreen
 import dev.gearturner.deepwatch.screens.UsagePermissionScreen
 import dev.gearturner.deepwatch.screens.usage.hasUsagePermission
@@ -16,6 +17,9 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = "main") {
         composable("main") {MainScreen(navController)}
-        composable("slider") { SliderScreen(navController)}
+        composable("slider") {SliderScreen(navController)}
+        composable("usage_categories") {UsageCategoryScreen(navController)}
+        composable("usage") {UsageListScreen()}
+        composable("usage_permission") {UsagePermissionScreen()}
     }
 }

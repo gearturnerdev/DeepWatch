@@ -15,15 +15,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            if(hasUsagePermission(this)){
+            //if(hasUsagePermission(this)) {
                 App()
-            }
-            else{
-                UsagePermissionScreen()
             }
         }
     }
-}
+//}
 
 @Composable
 fun App() {

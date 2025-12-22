@@ -4,19 +4,50 @@ import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.PackageManager
+import dev.gearturner.deepwatch.Classifiers.AppCategory
+import dev.gearturner.deepwatch.Classifiers.classifyApp
+import java.util.Calendar
 
 data class AppUsage(
     val appName: String,
     val packageName: String,
-    val usageMinutes: Long
+    val usageMinutes: Long,
+    val category: AppCategory,
 )
+
+fun isSystemNoise(packageName: String): Boolean {
+    return packageName.startsWith("com.android") ||
+            packageName.startsWith("android") ||
+            packageName.contains("launcher") ||
+            packageName.contains("inputmethod") ||
+            packageName.contains("systemui") ||
+            packageName.contains("googlequicksearchbox")
+}
+
+fun hasLauncherIntent(pm: PackageManager, packageName: String): Boolean {
+    return pm.getLaunchIntentForPackage(packageName) != null
+}
 
 fun getUsageStats(context: Context): List<AppUsage> {
     val usageStatsManager =
         context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-    val end = System.currentTimeMillis()
-    val start = end - (24 * 60 * 60 * 1000) // last 24 hours
+    val calendar = Calendar.getInstance()
+
+    // Start of today (12:00 AM)
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+    val start = calendar.timeInMillis
+
+    // End of today (11:59:59 PM)
+    calendar.set(Calendar.HOUR_OF_DAY, 23)
+    calendar.set(Calendar.MINUTE, 59)
+    calendar.set(Calendar.SECOND, 59)
+    calendar.set(Calendar.MILLISECOND, 999)
+    val end = calendar.timeInMillis
+
 
     val stats = usageStatsManager.queryUsageStats(
         UsageStatsManager.INTERVAL_DAILY,
@@ -25,27 +56,38 @@ fun getUsageStats(context: Context): List<AppUsage> {
     )
 
     val pm = context.packageManager
-    val usageList = mutableListOf<AppUsage>()
+    val usageMap = mutableMapOf<String, AppUsage>()
 
     for (usage in stats) {
-        if (usage.totalTimeInForeground > 0) {
-            val appName = try {
-                pm.getApplicationLabel(
-                    pm.getApplicationInfo(usage.packageName, PackageManager.GET_META_DATA)
-                ).toString()
-            } catch (e: Exception) {
-                usage.packageName
-            }
 
-            usageList.add(
-                AppUsage(
-                    appName = appName,
-                    packageName = usage.packageName,
-                    usageMinutes = usage.totalTimeInForeground / 1000 / 60
-                )
+        if (usage.totalTimeInForeground == 0L) continue
+
+        val minutes = usage.totalTimeInForeground / 1000 / 60
+        if (minutes == 0L) continue
+
+        val appName = try {
+            val appInfo = pm.getApplicationInfo(usage.packageName, 0)
+            pm.getApplicationLabel(appInfo).toString()
+        } catch (e: Exception) {
+            usage.packageName.substringAfterLast(".")
+        }
+
+        val existing = usageMap[usage.packageName]
+
+        if (existing == null) {
+            usageMap[usage.packageName] = AppUsage(
+                appName = appName,
+                packageName = usage.packageName,
+                usageMinutes = minutes,
+                category = classifyApp(appName, usage.packageName)
+            )
+        } else {
+            usageMap[usage.packageName] = existing.copy(
+                usageMinutes = existing.usageMinutes + minutes
             )
         }
     }
 
-    return usageList.sortedByDescending { it.usageMinutes }
+    return usageMap.values.sortedByDescending { it.usageMinutes }
+
 }
