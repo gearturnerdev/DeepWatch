@@ -1,11 +1,16 @@
 package dev.gearturner.deepwatch.Classifiers
 
 enum class AppCategory {
-    SOCIAL_MEDIA,
+    PRODUCTIVITY_AND_FINANCE,
+    SOCIAL,
+    INFORMATION_AND_READING,
     ENTERTAINMENT,
-    GAMING,
-    COMMUNICATION,
-    PRODUCTIVITY,
+    GAMES,
+    UTILITIES,
+    CREATIVITY,
+    SHOPPING_AND_FOOD,
+    EDUCATION,
+    TRAVEL,
     SYSTEM,
     OTHER
 }
